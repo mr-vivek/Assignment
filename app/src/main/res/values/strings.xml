@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Assignment</string>
+    <string name="internet_check">Oops, No internet found. Please check your connection or try again.</string>
+
+    <string name="auth_failure">Showing offline data if available. Authentication failure.(401)</string>
+    <string name="no_response_api">Showing offline data if available..No response from API.(Default)</string>
+    <string name="bad_request">Showing offline data if available. Bad request from client. (400)</string>
+    <string name="on_failure">Showing offline data if available. OnFailure API response.</string>
+    <string name="on_failure_while_fathcing_db_data">Failed to fetch data from DB.</string>
+    <string name="closing_msg">Press again to close application.</string>
+</resources>
