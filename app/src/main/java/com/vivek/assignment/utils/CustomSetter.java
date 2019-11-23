@@ -11,12 +11,11 @@ import com.vivek.assignment.application.AssignmentApp;
 
 public class CustomSetter {
 
-    @BindingAdapter("app:imageUrl")
+    @BindingAdapter("imageUrl")
     public static void loadImage(ImageView imageView, String imageUrl) {
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.placeholder);
-        // requestOptions.error(R.drawable.ic_error);
 
         Glide.with(AssignmentApp.getContext())
                 .setDefaultRequestOptions(requestOptions)

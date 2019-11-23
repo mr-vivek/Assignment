@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.vivek.assignment.R;
 import com.vivek.assignment.databinding.HomeFragmentBinding;
@@ -25,11 +26,18 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class HomeFragment extends Fragment implements Observer {
+
+/*
+* Home Fragment to show news list
+* Shimmer is used to show progess while service call
+* */
+public class HomeFragment extends Fragment implements Observer{
 
     private HomeFragmentBinding homeFragmentBinding;
     private HomeFragmentViewModel homeFragmentViewModel;
     private ArrayList<DataModel> dataModelList;
+    private boolean isRefreshing = false;
+    private HomeDataAdapter homeDataAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,15 +60,18 @@ public class HomeFragment extends Fragment implements Observer {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initRateListCall();
+        initCountryDataCall();
     }
 
-    private void initRateListCall() {
+    private void initCountryDataCall() {
         startShimmerEffect();
         homeFragmentViewModel.getRateListData();
     }
 
 
+    /*
+    * Observer pattern to observe service response
+    * */
     public void update(Observable observable, Object arg) {
 
         ServiceResponseModel serviceResponseModel = (ServiceResponseModel) arg;
@@ -68,13 +79,17 @@ public class HomeFragment extends Fragment implements Observer {
 
             stopShimmerEffect();
 
+            if(isRefreshing){
+                homeFragmentBinding.countryDataSwipeToRefresh.setRefreshing(false);
+            }
+
             switch (serviceResponseModel.getStatus()){
                 case SUCCESSFULLY_FETCHED_DATA:
 
                     dataModelList = (ArrayList<DataModel>) serviceResponseModel.getData();
                     if(dataModelList!= null && !dataModelList.isEmpty()) {
                         loadHeader(dataModelList.get(0).getTitle());
-                        loadCurrencyRateList();
+                        loadNewsList();
                     }
                     break;
 
@@ -100,11 +115,28 @@ public class HomeFragment extends Fragment implements Observer {
     }
 
 
-    private void loadCurrencyRateList() {
-        HomeDataAdapter homeDataAdapter = new HomeDataAdapter(getActivity(), dataModelList.get(0).getRows());
+    private void loadNewsList() {
+
+        homeFragmentBinding.countryDataSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isRefreshing = true;
+                initCountryDataCall();
+            }
+        });
+
+        homeFragmentBinding.countryDataSwipeToRefresh.setColorSchemeColors(
+                getResources().getColor(android.R.color.holo_blue_bright),
+                getResources().getColor(android.R.color.holo_green_light),
+                getResources().getColor(android.R.color.holo_orange_light),
+                getResources().getColor(android.R.color.holo_red_light)
+        );
+
+        homeDataAdapter = new HomeDataAdapter(getActivity(), dataModelList.get(0).getRows());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         homeFragmentBinding.countryDataRecyclerView.setLayoutManager(layoutManager);
         homeFragmentBinding.countryDataRecyclerView.setAdapter(homeDataAdapter);
+
     }
 
     public void stopShimmerEffect() {
@@ -127,16 +159,11 @@ public class HomeFragment extends Fragment implements Observer {
 
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         if(homeFragmentViewModel != null) {
             homeFragmentViewModel.reset();
-
         }
     }
-
-
-
 }

@@ -135,16 +135,14 @@ public class HomeFragmentViewModel extends Observable {
 
         if(dataModel != null){
 
-            List<DataModel> dataModelsFromDb = DBHolder.getDB().currencyRateDao().getAllHomeData();
+            List<DataModel> dataModelsFromDb = DBHolder.getDB().countryNewsDao().getAllHomeData();
 
             if(dataModelsFromDb!= null && dataModelsFromDb.size() > 0){
-                int primaryKey =  DBHolder.getDB().currencyRateDao().getPrimaryKey(dataModel.getDataId());
-
-                dataModel.setDataId(primaryKey);
-                DBHolder.getDB().currencyRateDao().updateHomeData(dataModel);
+                dataModel.setDataId(dataModelsFromDb.get(0).getDataId());
+                DBHolder.getDB().countryNewsDao().updateHomeData(dataModel);
             } else {
                 dataModel.setDataId(1);
-                DBHolder.getDB().currencyRateDao().insertHomeData(dataModel);
+                DBHolder.getDB().countryNewsDao().insertHomeData(dataModel);
             }
         }
     }
@@ -154,7 +152,7 @@ public class HomeFragmentViewModel extends Observable {
         Single<List<DataModel>> single = Single.create(emitter -> {
 
             try {
-                List<DataModel> rateModelList = DBHolder.getDB().currencyRateDao().getAllHomeData();
+                List<DataModel> rateModelList = DBHolder.getDB().countryNewsDao().getAllHomeData();
 
 
                 if (rateModelList != null && !rateModelList.isEmpty()) {
@@ -203,20 +201,14 @@ public class HomeFragmentViewModel extends Observable {
         if (result != null && !result.isEmpty()) {
             setChanged();
             notifyObservers(new ServiceResponseModel(Status.SUCCESSFULLY_FETCHED_DATA, result));
-        } /*else {
-            setChanged();
-            notifyObservers(new ServiceResponseModel(Status.FAILED_TO_FETCH_DATA, AssignmentApp.getContext().getString(R.string.on_failure_while_fathcing_db_data)));
-        }*/
+        }
     }
 
     private void getOnlineData(List<DataModel> result) {
         if (result != null && !result.isEmpty()) {
             setChanged();
             notifyObservers(new ServiceResponseModel(Status.SUCCESSFULLY_FETCHED_DATA, result));
-        } /*else {
-            setChanged();
-            notifyObservers(new ServiceResponseModel(Status.FAILED_TO_FETCH_DATA, AssignmentApp.getContext().getString(R.string.on_failure_while_fathcing_db_data)));
-        }*/
+        }
     }
 
 

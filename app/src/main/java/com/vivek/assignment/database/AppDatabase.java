@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "assignment_database";
 
 
-    public abstract DataDao currencyRateDao();
+    public abstract DataDao countryNewsDao();
 
     public static AppDatabase getAppDatabase() {
         if (instance == null) {

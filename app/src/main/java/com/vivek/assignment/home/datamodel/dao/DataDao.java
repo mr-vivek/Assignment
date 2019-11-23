@@ -28,4 +28,8 @@ public interface DataDao {
     @Update
     int updateHomeData(DataModel dataModel);
 
+    @Query("DELETE FROM home_data WHERE rows =:dataId")
+    void deleteItem(int dataId);
+
+
 }

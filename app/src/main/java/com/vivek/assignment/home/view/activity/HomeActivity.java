@@ -15,6 +15,11 @@ import com.vivek.assignment.utils.FragmentUtil;
 import java.util.Observable;
 import java.util.Observer;
 
+
+/*
+* Single activity application - This activity works as a container
+* This activity handles all the fragment using "FragmentUtil" utility class to replace or remove fragment
+* */
 public class HomeActivity extends AppCompatActivity implements Observer {
 
     private int backPress = 0;
@@ -38,9 +43,12 @@ public class HomeActivity extends AppCompatActivity implements Observer {
         initData();
     }
 
+
+    // Added initial fragment on activity
     private void initData() {
         FragmentUtil.replaceFragment(this, new HomeFragment(), R.id.home_container, 0);
     }
+
 
     @Override
     public void onBackPressed() {
